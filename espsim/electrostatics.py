@@ -7,6 +7,7 @@ from rdkit.Chem.rdForceFieldHelpers import UFFGetMoleculeForceField
 import numpy as np
 import scipy.spatial
 from .helpers import Renormalize, SimilarityMetric, psi4Charges, mlCharges, check_hs
+from espaloma_charge import charge as espaloma
 
 def GetMolProps(mol,
                 cid,
@@ -46,7 +47,15 @@ def GetMolProps(mol,
                 charge=np.array([a.GetDoubleProp('_GasteigerCharge') for a in mol.GetAtoms()])
         elif partialCharges == 'ml':
             charge=np.array(mlCharges([mol])[0])
-
+        
+        elif partialCharges == 'espaloma':
+            try:
+                charge=espaloma(mol)
+            except:
+                print("Failed to generate Espaloma Charges for the input molecule, defaulting to Gasteiger charges.")
+                AllChem.ComputeGasteigerCharges(mol)
+                charge=np.array([a.GetDoubleProp('_GasteigerCharge') for a in mol.GetAtoms()])
+                
         elif partialCharges == "resp":
             xyz=Chem.rdmolfiles.MolToXYZBlock(mol,confId=cid)
             charge=psi4Charges(xyz,basisPsi4,methodPsi4,gridPsi4)
