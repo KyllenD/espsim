@@ -1,16 +1,18 @@
-name: espsim
+name: espsim_github
 
 channels:
   - rdkit
   - pytorch
+  - dglteam
   - psi4
   - conda-forge
 
 dependencies:
   - python>=3.9
+  - dgl=1.1.2=py311_0
   - rdkit
   - pytorch
-  - numpy
+  - numpy<2
   - scikit-learn
   - scipy
   - matplotlib
@@ -23,3 +25,5 @@ dependencies:
   - pip
   - pip:
     - git+https://github.com/hesther/chemprop-atom-bond.git
+    - git+https://github.com/choderalab/espaloma-charge.git
+    - git+https://github.com/KyllenD/espsim.git 
